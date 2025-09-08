@@ -161,7 +161,10 @@ jobs:
       if: steps.check_release.outputs.exists == 'false'
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: '10.0.100-preview.7.25380.108'
+        source-url: 'https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json'
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Build Specify .NET tool and self-contained binaries
       if: steps.check_release.outputs.exists == 'false'
       run: dotnet build --configuration Release ./src/specify_dotnet/Specify.Cli.csproj
@@ -172,8 +175,6 @@ jobs:
 
     - name: Publish Specify CLI NuGet package to GitHub Packages
       if: steps.check_release.outputs.exists == 'false'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: dotnet nuget push ./src/specify_dotnet/bin/Release/*.nupkg
         
     - name: Generate release notes
