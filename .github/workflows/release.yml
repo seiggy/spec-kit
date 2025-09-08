@@ -12,6 +12,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      packages: write
       
     steps:
     - name: Checkout repository
@@ -156,6 +157,42 @@ jobs:
         unzip -l spec-kit-template-gemini-${{ steps.get_tag.outputs.new_version }}.zip | head -10
         echo "Copilot package contents:"
         unzip -l spec-kit-template-copilot-${{ steps.get_tag.outputs.new_version }}.zip | head -10
+
+    - name: Build Specify .NET tool and self-contained binaries
+      if: steps.check_release.outputs.exists == 'false'
+      run: |
+        echo "Building Specify CLI .NET tool nupkg and binaries"
+        VERSION_NO_V=${{ steps.get_tag.outputs.new_version }}
+        VERSION_NO_V=${VERSION_NO_V#v}
+        dotnet restore src/specify_dotnet/Specify.Cli/Specify.Cli.csproj
+        dotnet pack src/specify_dotnet/Specify.Cli/Specify.Cli.csproj -c Release -p:PackageVersion=$VERSION_NO_V --no-build
+        mkdir -p dist
+        cp src/specify_dotnet/Specify.Cli/bin/Release/*.nupkg dist/ || true
+        RUNTIME_IDS=(win-x64 linux-x64 osx-arm64)
+        for rid in "${RUNTIME_IDS[@]}"; do
+          dotnet publish src/specify_dotnet/Specify.Cli/Specify.Cli.csproj -c Release -r $rid --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishTrimmed=false -p:Version=$VERSION_NO_V -o dist/publish/$rid
+          (cd dist/publish/$rid && zip -r ../../../specify-${rid}-${{ steps.get_tag.outputs.new_version }}.zip .)
+        done
+        ls -1 dist || true
+
+    - name: Publish Specify CLI NuGet package to GitHub Packages
+      if: steps.check_release.outputs.exists == 'false'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        VERSION_NO_V=${{ steps.get_tag.outputs.new_version }}
+        VERSION_NO_V=${VERSION_NO_V#v}
+        echo "Pushing Specify.Cli version $VERSION_NO_V to GitHub Packages"
+        for pkg in dist/Specify.Cli.$VERSION_NO_V.nupkg; do
+          if [ -f "$pkg" ]; then
+            dotnet nuget push "$pkg" \
+              --api-key $GITHUB_TOKEN \
+              --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+              --skip-duplicate
+          else
+            echo "Package $pkg not found" && exit 1
+          fi
+        done
         
     - name: Generate release notes
       if: steps.check_release.outputs.exists == 'false'
@@ -201,6 +238,10 @@ jobs:
           spec-kit-template-copilot-${{ steps.get_tag.outputs.new_version }}.zip \
           spec-kit-template-claude-${{ steps.get_tag.outputs.new_version }}.zip \
           spec-kit-template-gemini-${{ steps.get_tag.outputs.new_version }}.zip \
+          dist/*.nupkg \
+          specify-win-x64-${{ steps.get_tag.outputs.new_version }}.zip \
+          specify-linux-x64-${{ steps.get_tag.outputs.new_version }}.zip \
+          specify-osx-arm64-${{ steps.get_tag.outputs.new_version }}.zip \
           --title "Spec Kit Templates - $VERSION_NO_V" \
           --notes-file release_notes.md
       env:

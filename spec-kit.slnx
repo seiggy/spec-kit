@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+  </Configurations>
+  <Folder Name="/src/" />
+  <Folder Name="/src/specify_dotnet/">
+    <Project Path="src/specify_dotnet/Specify.Cli.csproj" />
+  </Folder>
+</Solution>

@@ -38,6 +38,10 @@ Initialize your project depending on the coding agent you're using:
 uvx --from git+https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
 ```
 
+```bash
+dnx --add-source https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
+```
+
 ### 2. Create the spec
 
 Use the `/specify` command to describe what you want to build. Focus on the **what** and **why**, not the tech stack.
