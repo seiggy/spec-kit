@@ -161,7 +161,7 @@ jobs:
       if: steps.check_release.outputs.exists == 'false'
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '10.0.100-preview.7.25380.108'
+        dotnet-version: '10.0.x'
         source-url: 'https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json'
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -175,8 +175,8 @@ jobs:
 
     - name: Publish Specify CLI NuGet package to GitHub Packages
       if: steps.check_release.outputs.exists == 'false'
-      run: dotnet nuget push ./src/specify_dotnet/bin/Release/*.nupkg
-        
+      run: dotnet nuget push ./src/specify_dotnet/bin/Release/*.nupkg --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --api-key ${{ secrets.GITHUB_TOKEN }}
+
     - name: Generate release notes
       if: steps.check_release.outputs.exists == 'false'
       id: release_notes
