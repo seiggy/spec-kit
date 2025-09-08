@@ -8,9 +8,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dotnet-version: [ '10.0.x']
     permissions:
       contents: write
       pull-requests: write
@@ -160,6 +157,11 @@ jobs:
         echo "Copilot package contents:"
         unzip -l spec-kit-template-copilot-${{ steps.get_tag.outputs.new_version }}.zip | head -10
 
+    - name: Set up .NET
+      if: steps.check_release.outputs.exists == 'false'
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '10.0.x'
     - name: Build Specify .NET tool and self-contained binaries
       if: steps.check_release.outputs.exists == 'false'
       run: dotnet build --configuration Release ./src/specify_dotnet/Specify.Cli.csproj
