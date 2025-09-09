@@ -171,7 +171,7 @@ jobs:
 
     - name: Package Specify .NET tool and self-contained binaries
       if: steps.check_release.outputs.exists == 'false'
-      run: dotnet pack --configuration Release ./src/specify_dotnet/Specify.Cli.csproj
+      run: dotnet pack --configuration Release ./src/specify_dotnet/Specify.Cli.csproj /p:Version=${{ steps.get_tag.outputs.new_version }}
 
     - name: Publish Specify CLI NuGet package to GitHub Packages
       if: steps.check_release.outputs.exists == 'false'
