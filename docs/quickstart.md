@@ -8,8 +8,14 @@ This guide will help you get started with Spec-Driven Development using Spec Kit
 
 Initialize your project depending on the coding agent you're using:
 
+Python
 ```bash
 uvx --from git+https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
+```
+
+.NET
+```bash
+dnx --add-source https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
 ```
 
 ### 2. Create the Spec

@@ -14,8 +14,14 @@
 
 The easiest way to get started is to initialize a new project:
 
+Python
 ```bash
 uvx --from git+https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
+```
+
+.NET
+```bash
+dnx --add-source https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
 ```
 
 Or initialize in the current directory:
@@ -24,22 +30,42 @@ Or initialize in the current directory:
 uvx --from git+https://github.com/github/spec-kit.git specify init --here
 ```
 
+.NET
+```bash
+dnx --add-source https://github.com/github/spec-kit.git specify init --here
+```
+
 ### Specify AI Agent
 
 You can proactively specify your AI agent during initialization:
 
+Python
 ```bash
 uvx --from git+https://github.com/github/spec-kit.git specify init <project_name> --ai claude
 uvx --from git+https://github.com/github/spec-kit.git specify init <project_name> --ai gemini
 uvx --from git+https://github.com/github/spec-kit.git specify init <project_name> --ai copilot
 ```
 
+.NET
+```bash
+dnx --add-source https://github.com/github/spec-kit.git specify init <project_name> --ai claude
+dnx --add-source https://github.com/github/spec-kit.git specify init <project_name> --ai gemini
+dnx --add-source https://github.com/github/spec-kit.git specify init <project_name> --ai copilot
+```
+
+
 ### Ignore Agent Tools Check
 
 If you prefer to get the templates without checking for the right tools:
 
+Python
 ```bash
 uvx --from git+https://github.com/github/spec-kit.git specify init <project_name> --ai claude --ignore-agent-tools
+```
+
+.NET
+```bash
+dnx --add-source https://github.com/github/spec-kit.git specify init <project_name> --ai claude --ignore-agent-tools
 ```
 
 ## Verification
