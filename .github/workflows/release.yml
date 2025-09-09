@@ -224,10 +224,6 @@ jobs:
           spec-kit-template-copilot-${{ steps.get_tag.outputs.new_version }}.zip \
           spec-kit-template-claude-${{ steps.get_tag.outputs.new_version }}.zip \
           spec-kit-template-gemini-${{ steps.get_tag.outputs.new_version }}.zip \
-          src/specify_dotnet/bin/Release/*.nupkg \
-          specify-win-x64-${{ steps.get_tag.outputs.new_version }}.zip \
-          specify-linux-x64-${{ steps.get_tag.outputs.new_version }}.zip \
-          specify-osx-arm64-${{ steps.get_tag.outputs.new_version }}.zip \
           --title "Spec Kit Templates - $VERSION_NO_V" \
           --notes-file release_notes.md
       env:
